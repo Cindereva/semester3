@@ -1,0 +1,31 @@
+var mic;
+
+function setup() {
+  createCanvas(1000, 1000);
+
+
+  mic = new p5.AudioIn();
+    mic.start();
+    fft = new p5.FFT();
+    fft.setInput(mic);
+
+}
+
+function draw() {
+  background(100);
+  //Get the overall frequency. The fft first gets analyzed
+var spectrum = fft.analyze();
+spectralCentroid = fft.getCentroid();
+
+  // Get the overall volume (between 0 and 1.0) in this case multiplied by x
+  var vol = mic.getLevel()*10000;
+  fill(50,vol+100,vol+100);
+  var klein = spectralCentroid / 2500;
+
+  // Draw an ellipse with height based on volume
+  var h = map(klein, 0, 1, height, 0);
+  ellipse(vol, h - 25, 50, 50);
+
+  console.log( vol );
+
+}
