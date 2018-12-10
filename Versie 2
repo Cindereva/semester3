@@ -1,0 +1,80 @@
+var amp;
+var button;
+var mic;
+
+var volhistory = [];
+
+
+
+function setup() {
+  mic = new p5.AudioIn();
+    mic.start();
+    fft = new p5.FFT();
+    fft.setInput(mic);
+  createCanvas(500, 500);
+  angleMode(DEGREES);
+
+  amp = new p5.Amplitude();
+}
+
+function draw() {
+    var spectrum = fft.analyze();
+    spectralCentroid = fft.getCentroid();
+  background(0);
+  var vol =  mic.getLevel()*2;
+  volhistory.push(vol);
+  //stroke(255);
+  noFill();
+
+  translate(width / 2, height / 2);
+  beginShape();
+
+ 
+  for (var i = 0; i < 1440; i++) {
+  //  var r = map(volhistory[i]*8, 0, 15, 50, 500);
+    // var x = r * cos(i);
+    // var y = r * sin(i);
+    // vertex(x, y);
+
+  if(  spectralCentroid > 2000){
+      stroke(0,206,209);
+      var r = map(volhistory[i]*8, 0, 15, 50, 500);
+      var x = r * cos(i);
+      var y = r * sin(i);
+      vertex(x, y);
+    }
+
+    else if (  spectralCentroid > 1000){
+
+          var r = map(volhistory[i]*8, 0, 15, 50, 500);
+      stroke(135,206,235);
+      var x = r * cos(i);
+      var y = r * sin(i);
+      vertex(x, y);
+    }
+
+    else if (  spectralCentroid > 500){
+
+    var r = map(volhistory[i]*8, 0, 15, 50, 500);
+      stroke(30,144,255);
+      var x = r * cos(i);
+      var y = r * sin(i);
+      vertex(x, y);
+    }
+
+    else {
+
+          var r = map(volhistory[i]*8, 0, 15, 50, 500);
+      stroke(65,105,225);
+      var x = r * cos(i);
+      var y = r * sin(i);
+      vertex(x, y);
+    }
+
+
+  }
+  endShape();
+
+  if (volhistory.length > 1440) {
+    volhistory.splice(0, 1);
+  }
